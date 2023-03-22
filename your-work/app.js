@@ -1,3 +1,4 @@
+// Loads the texture for the game to begin
 function loadTexture(path) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -8,6 +9,7 @@ function loadTexture(path) {
   })
 }
 
+//Function that creates the enemies, a total of 5 enmies that have a width, also have a start and top x and y interval
 function createEnemies(ctx, canvas, enemyImg) {
   const MONSTER_TOTAL = 5;
   const MONSTER_WIDTH = MONSTER_TOTAL * 98;
@@ -21,6 +23,7 @@ function createEnemies(ctx, canvas, enemyImg) {
   }
 }
 
+// On a window load, this loads the visual componenents of the game, loading the canvas and pulling the assets from the assets folder for the player and the enemy ships
 window.onload = async() => {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
@@ -32,6 +35,7 @@ window.onload = async() => {
   ctx.drawImage(heroImg, canvas.width/2 - 45, canvas.height - (canvas.height /4));
   createEnemies(ctx, canvas, enemyImg);
 };
+
 
 class GameObject {
   constructor(x, y) {
@@ -109,6 +113,7 @@ class EventEmitter {
   }
 }
 
+// List of messages that occur once the keybind event listeners are pressed
 const Messages = {
   KEY_EVENT_UP: "KEY_EVENT_UP",
   KEY_EVENT_DOWN: "KEY_EVENT_DOWN",
@@ -129,6 +134,8 @@ let heroImg,
       createEnemies();
       createHero();
     
+
+      // Event emitters for keybind presses, up, down, left, and right
       eventEmitter.on(Messages.KEY_EVENT_UP, () => {
         hero.y -= 5 ;
       });
@@ -146,6 +153,7 @@ let heroImg,
       });
     }
 
+    // On load event, the canvas retrieves the canvas element, and the other game elemtns also retrieve the corresponding assets
     window.onload = async () => {
       canvas = document.getElementById("canvas");
       ctx = canvas.getContext("2d");
@@ -163,6 +171,7 @@ let heroImg,
       
     };
 
+    // Function that creates enemies
     function createEnemies() {
       const MONSTER_TOTAL = 5;
       const MONSTER_WIDTH = MONSTER_TOTAL * 98;
@@ -178,6 +187,7 @@ let heroImg,
       }
     }
 
+    //Function that creates a hero element
     function createHero() {
       hero = new Hero(
         canvas.width / 2 - 45,
@@ -187,6 +197,7 @@ let heroImg,
       gameObjects.push(hero);
     }
 
+    // This function draws the game objects, also known as the game loop 
     function drawGameObjects(ctx) {
       gameObjects.forEach((go) => go.draw(ctx));
     }
