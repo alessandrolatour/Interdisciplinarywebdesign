@@ -80,12 +80,14 @@ class GameObject {
 }
 
 class Hero extends GameObject {
-  constructor(x, y) {
-    super(x, y);
-    (this.width = 99), (this.height = 75);
-    this.type = 'Hero';
-    this.speed = { x: 0, y: 0 };
-    this.cooldown = 0;
+	constructor(x, y) {
+		super(x, y);
+		(this.width = 99), (this.height = 75);
+		this.type = 'Hero';
+		this.speed = { x: 0, y: 0 };
+		this.cooldown = 0;
+		this.life = 3;
+		this.points = 0;
   }
 
   fire() {
@@ -101,9 +103,18 @@ class Hero extends GameObject {
     }, 200);
   }
 
-  canFire() {
-    return this.cooldown === 0;
-  }
+	canFire() {
+		return this.cooldown === 0;
+	}
+	decrementLife() {
+		this.life--;
+		if (this.life === 0) {
+			this.dead = true;
+		}
+	}
+	incrementPoints() {
+		this.points += 100;
+	}
 }
 
 class Enemy extends GameObject {
@@ -164,6 +175,8 @@ let onKeyDown = function (e) {
     }
   });
 
+  
+
 class EventEmitter {
   constructor() {
     this.listeners = {};
@@ -194,13 +207,15 @@ const Messages = {
   COLLISION_ENEMY_HERO: "COLLISION_ENEMY_HERO",
 };
  
-let heroImg, 
-    enemyImg, 
-    laserImg,
-    canvas, ctx, 
-    gameObjects = [], 
-    hero, 
-    eventEmitter = new EventEmitter();
+let heroImg,
+	enemyImg,
+	laserImg,
+	lifeImg,
+	canvas,
+	ctx,
+	gameObjects = [],
+	hero,
+	eventEmitter = new EventEmitter();
 
     function initGame() {
       gameObjects = [];
@@ -260,22 +275,46 @@ let heroImg,
       });
     }
 
+    function drawLife() {
+      // TODO, 35, 27
+      //
+    
+      const START_POS = canvas.width - 180;
+      for (let i = 0; i < hero.life; i++) {
+        ctx.drawImage(lifeImg, START_POS + 45 * (i + 1), canvas.height - 37);
+      }
+    }
+    
+    function drawPoints() {
+      ctx.font = '30px Arial';
+      ctx.fillStyle = 'red';
+      ctx.textAlign = 'left';
+      drawText('Points: ' + hero.points, 10, canvas.height - 20);
+    }
+    
+    function drawText(message, x, y) {
+      ctx.fillText(message, x, y);
+    }
+
     // On load event, the canvas retrieves the canvas element, and the other game elemtns also retrieve the corresponding assets
     window.onload = async () => {
-      canvas = document.getElementById("canvas");
-      ctx = canvas.getContext("2d");
-      heroImg = await loadTexture("assets/player.png");
-      enemyImg = await loadTexture("assets/enemyShip.png");
-      laserImg = await loadTexture("assets/laserRed.png");
+      canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      heroImg = await loadTexture('assets/player.png');
+      enemyImg = await loadTexture('assets/enemyShip.png');
+      laserImg = await loadTexture('assets/laserRed.png');
+      lifeImg = await loadTexture('assets/life.png');
     
       initGame();
       let gameLoopId = setInterval(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawPoints();
+        drawLife();
+        updateGameObjects();
         drawGameObjects(ctx);
       }, 100);
-      
     };
 
     // Function that creates enemies
@@ -306,16 +345,13 @@ let heroImg,
 
     function updateGameObjects() {
       const enemies = gameObjects.filter((go) => go.type === 'Enemy');
-      const lasers = gameObjects.filter((go) => go.type === 'Laser'); // laser hit something
-      lasers.forEach((l) => {
-        enemies.forEach((m) => {
-          if (intersectRect(l.rectFromGameObject(), m.rectFromGameObject())) {
-            eventEmitter.emit(Messages.COLLISION_ENEMY_LASER, {
-              first: l,
-              second: m,
-            });
-          }
-        });
+      const lasers = gameObjects.filter((go) => go.type === 'Laser');
+    
+      enemies.forEach((enemy) => {
+        const heroRect = hero.rectFromGameObject();
+        if (intersectRect(heroRect, enemy.rectFromGameObject())) {
+          eventEmitter.emit(Messages.COLLISION_ENEMY_HERO, { enemy });
+        }
       });
     
       gameObjects = gameObjects.filter((go) => !go.dead);
