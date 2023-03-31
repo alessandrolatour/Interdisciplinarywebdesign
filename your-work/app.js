@@ -158,22 +158,22 @@ let onKeyDown = function (e) {
 
   window.addEventListener('keydown', onKeyDown);
 
-  // TODO make message driven
-  window.addEventListener('keyup', (evt) => {
-    if (evt.key === 'ArrowUp') {
-      eventEmitter.emit(Messages.KEY_EVENT_UP);
-    } else if (evt.key === 'ArrowDown') {
-      eventEmitter.emit(Messages.KEY_EVENT_DOWN);
-    } else if (evt.key === 'ArrowLeft') {
-      eventEmitter.emit(Messages.KEY_EVENT_LEFT);
-    } else if (evt.key === 'ArrowRight') {
-      eventEmitter.emit(Messages.KEY_EVENT_RIGHT);
-    } else if (evt.keyCode === 32) {
-      eventEmitter.emit(Messages.KEY_EVENT_SPACE);
-    } else if (evt.key === 'Enter') {
-      eventEmitter.emit(Messages.KEY_EVENT_ENTER);
-    }
-  });
+// TODO make message driven
+window.addEventListener('keyup', (evt) => {
+	if (evt.key === 'ArrowUp') {
+		eventEmitter.emit(Messages.KEY_EVENT_UP);
+	} else if (evt.key === 'ArrowDown') {
+		eventEmitter.emit(Messages.KEY_EVENT_DOWN);
+	} else if (evt.key === 'ArrowLeft') {
+		eventEmitter.emit(Messages.KEY_EVENT_LEFT);
+	} else if (evt.key === 'ArrowRight') {
+		eventEmitter.emit(Messages.KEY_EVENT_RIGHT);
+	} else if (evt.keyCode === 32) {
+		eventEmitter.emit(Messages.KEY_EVENT_SPACE);
+	} else if (evt.key === 'Enter') {
+		eventEmitter.emit(Messages.KEY_EVENT_ENTER);
+	}
+});
 
   
 
@@ -205,6 +205,8 @@ const Messages = {
   KEY_EVENT_SPACE: "KEY_EVENT_SPACE",
   COLLISION_ENEMY_LASER: "COLLISION_ENEMY_LASER",
   COLLISION_ENEMY_HERO: "COLLISION_ENEMY_HERO",
+  GAME_END_LOSS: "GAME_END_LOSS",
+GAME_END_WIN: "GAME_END_WIN",
 };
  
 let heroImg,
@@ -249,27 +251,30 @@ let heroImg,
         first.dead = true;
         second.dead = true;
         hero.incrementPoints();
-    
+      
         if (isEnemiesDead()) {
           eventEmitter.emit(Messages.GAME_END_WIN);
         }
       });
-    
+      
       eventEmitter.on(Messages.COLLISION_ENEMY_HERO, (_, { enemy }) => {
         enemy.dead = true;
         hero.decrementLife();
-        if (isHeroDead()) {
+      
+        if (isHeroDead())  {
           eventEmitter.emit(Messages.GAME_END_LOSS);
-          return; // loss before victory
+          return;  // loss before victory
         }
+      
         if (isEnemiesDead()) {
           eventEmitter.emit(Messages.GAME_END_WIN);
         }
       });
-    
+      
       eventEmitter.on(Messages.GAME_END_WIN, () => {
         endGame(true);
       });
+        
       eventEmitter.on(Messages.GAME_END_LOSS, () => {
         endGame(false);
       });
