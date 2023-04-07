@@ -20,19 +20,18 @@
         <button>Login</button>
       </form>
       <hr />
-<h2>Register</h2>
-<form id="registerForm" action="javascript:register()">
-    <input id="user" name="user" type="text" maxlength="20" required>
-    ...
-    <input id="currency" name="currency" type="text" value="$" maxlength="5" required>
-    ...
-    <input id="description" name="description" type="text" maxlength="100">
-  <label for="description">Description</label>
-  <input id="description" name="description" type="text">
-  <label for="balance">Current balance</label>
-  <input id="balance" name="balance" type="number" value="0">
-  <button>Register</button>
-</form>
+      <h2>Register</h2>
+      <form id="registerForm" action="javascript:register()">
+        <label for="username">Username</label>
+        <input id="user" name="user" type="text" maxlength="20" required>
+        <label for="currency">Currency</label>
+        <input id="currency" name="currency" type="text" value="$" maxlength="5" required>
+       <label for="description">Description</label>
+        <input id="description" name="description" type="text">
+        <label for="balance">Current balance</label>
+        <input id="balance" name="balance" type="number" value="0">
+        <button>Register</button>
+      </form>
     </section>
   </template>
   <template id="dashboard">
@@ -58,4 +57,5 @@
     </section>
   </template>
 </body>
+
 </html>
