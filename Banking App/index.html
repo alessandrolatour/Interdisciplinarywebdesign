@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bank App</title>
+  <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
 
@@ -14,19 +15,20 @@
     <h1>Bank App</h1>
     <section>
       <h2>Login</h2>
-      <form id="loginForm">
+      <form id="loginForm" action="javascript:login()">
         <label for="username">Username</label>
         <input id="username" name="user" type="text">
+        <div id="loginError"></div>
         <button>Login</button>
       </form>
       <hr />
       <h2>Register</h2>
       <form id="registerForm" action="javascript:register()">
-        <label for="username">Username</label>
+        <label for="user">Username</label>
         <input id="user" name="user" type="text" maxlength="20" required>
         <label for="currency">Currency</label>
         <input id="currency" name="currency" type="text" value="$" maxlength="5" required>
-       <label for="description">Description</label>
+        <label for="description">Description</label>
         <input id="description" name="description" type="text">
         <label for="balance">Current balance</label>
         <input id="balance" name="balance" type="number" value="0">
